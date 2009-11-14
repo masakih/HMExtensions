@@ -11,4 +11,9 @@
 
 @interface NSWorkspace(HMCocoaExtention)
 -(BOOL)quitApplication:(NSString *)appName;
+
+- (BOOL)openAlias:(NSData *)aliasData;
+- (BOOL)openAlias:(NSData *)aliasData withApplication:(NSString *)appName;
+- (BOOL)openAlias:(NSData *)aliasData withApplication:(NSString *)appName andDeactivate:(BOOL)flag;
+
 @end

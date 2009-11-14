@@ -46,4 +46,38 @@
 	}
     return err == noErr;
 }
+
+- (BOOL)openAlias:(NSData *)aliasData
+{
+	return [self openAlias:aliasData withApplication:nil andDeactivate:YES];
+}
+- (BOOL)openAlias:(NSData *)aliasData withApplication:(NSString *)appName
+{
+	return [self openAlias:aliasData withApplication:appName andDeactivate:YES];
+}
+- (BOOL)openAlias:(NSData *)aliasData withApplication:(NSString *)appName andDeactivate:(BOOL)flag
+{
+	if(!appName || [appName length] == 0) {
+		appName = @"Finder";
+	}
+	
+	NSAppleEventDescriptor *event = [NSAppleEventDescriptor appleEventWithEventClass:kCoreEventClass
+																			 eventID:kAEOpenDocuments
+																	   targetAppName:appName];
+	
+	NSAppleEventDescriptor *alias = [NSAppleEventDescriptor descriptorWithDescriptorType:typeAlias
+																				   bytes:[aliasData bytes]
+																				  length:[aliasData length]];
+	[event setParamDescriptor:alias forKeyword:keyDirectObject];
+	
+	OSStatus error = [event sendAppleEventWithMode:kAECanInteract
+									timeOutInTicks:kAEDefaultTimeout
+											replay:NULL];
+	
+	if(flag && error == noErr) {
+		[self launchApplication:appName];
+	}
+	return error == noErr;
+}
+
 @end
