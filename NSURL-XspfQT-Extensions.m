@@ -18,7 +18,8 @@
 	
 	NSString *myHost = [self host];
 	NSString *otherHost = [other host];
-	if(!myHost && [otherHost isEqualToString:@"localhost"]) {
+	if((!myHost && [otherHost isEqualToString:@"localhost"])
+		|| (!otherHost && [myHost isEqualToString:@"localhost"])) {
 		NSString *myPath = [self path];
 		NSString *otherPath = [other path];
 		if([myPath isEqualToString:otherPath]) return YES;
