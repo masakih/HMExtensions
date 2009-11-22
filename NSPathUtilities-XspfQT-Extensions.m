@@ -64,7 +64,7 @@
 	BlockMoveData([self bytes], *alias, [self length]);
 	HSetState((Handle)alias, handleState);
 	
-	error = FSResolveAlias(NULL, alias, &ref, &wasChanged);
+	error = FSResolveAliasWithMountFlags(NULL, alias, &ref, &wasChanged, kARMMountVol | kARMNoUI | kARMMultVols | kARMSearch);
 	DisposeHandle((Handle)alias);
 	if(error != noErr) {
 		return nil;
