@@ -67,6 +67,7 @@
 	error = FSResolveAliasWithMountFlags(NULL, alias, &ref, &wasChanged, kARMMountVol | kARMNoUI | kARMMultVols | kARMSearch);
 	DisposeHandle((Handle)alias);
 	if(error != noErr) {
+		NSLog(@"Can not resolve alias. (%d)", error);
 		return nil;
 	}
 	
