@@ -64,7 +64,7 @@
 	BlockMoveData([self bytes], *alias, [self length]);
 	HSetState((Handle)alias, handleState);
 	
-	error = FSResolveAliasWithMountFlags(NULL, alias, &ref, &wasChanged, kARMMountVol | kARMNoUI | kARMMultVols | kARMSearch);
+	error = FSResolveAliasWithMountFlags(NULL, alias, &ref, &wasChanged,  kResolveAliasTryFileIDFirst);
 	DisposeHandle((Handle)alias);
 	if(error != noErr) {
 		NSLog(@"Can not resolve alias. (%d)", error);
