@@ -80,4 +80,66 @@
 	return error == noErr;
 }
 
+
+inline static NSAppleEventDescriptor *fileDescriptor(NSString *filePath)
+{
+	NSAppleEventDescriptor *fileDesc;
+	NSAppleEventDescriptor *fileNameDesc;
+	NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+	const char *fileURLCharP;
+	
+	fileURLCharP = [[fileURL absoluteString] fileSystemRepresentation];
+	fileNameDesc = [NSAppleEventDescriptor descriptorWithDescriptorType:typeFileURL
+																  bytes:fileURLCharP
+																 length:strlen(fileURLCharP)];
+	
+	fileDesc = [NSAppleEventDescriptor objectSpecifierWithDesiredClass:cFile
+															 container:nil
+															   keyForm:formName
+															   keyData:fileNameDesc];
+	return fileDesc;
+}
+- (BOOL)showInformationInFinder:(NSString *)filePath
+{
+	NSAppleEventDescriptor *ae;
+	OSStatus err = noErr;
+	
+	ae = [NSAppleEventDescriptor appleEventWithEventClass:kCoreEventClass
+												  eventID:kAEOpenDocuments
+											targetAppName:@"Finder"];
+	if(!ae) {
+		NSLog(@"Can NOT create AppleEvent.");
+		return NO;
+	}
+	
+	NSAppleEventDescriptor *fileInfoDesc = [NSAppleEventDescriptor
+											objectSpecifierWithDesiredClass:cProperty
+											container:fileDescriptor(filePath)
+											keyForm:cProperty
+											keyData:[NSAppleEventDescriptor descriptorWithTypeCode:cInfoWindow]];
+	
+	[ae setParamDescriptor:fileInfoDesc
+				forKeyword:keyDirectObject];
+	
+	// activate Finder
+	[self launchApplication:@"Finder"];
+	@try {
+		err = [ae sendAppleEventWithMode:kAENoReply | kAENeverInteract
+						  timeOutInTicks:kAEDefaultTimeout
+								  replay:NULL];
+	}
+	@catch (NSException *ex) {
+		if(![[ex name] isEqualTo:HMAEDescriptorSendingNotAppleEventException]) {
+			@throw;
+		}
+	}
+	@finally {
+		if( err != noErr ) {
+			NSLog(@"AESendMessage Error. Error NO is %d.", err );
+		}
+	}
+		
+	return err == noErr;
+}
+
 @end

@@ -16,4 +16,6 @@
 - (BOOL)openAlias:(NSData *)aliasData withApplication:(NSString *)appName;
 - (BOOL)openAlias:(NSData *)aliasData withApplication:(NSString *)appName andDeactivate:(BOOL)flag;
 
+- (BOOL)showInformationInFinder:(NSString *)path;
+
 @end
